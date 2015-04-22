@@ -22,12 +22,12 @@ import (
 var (
 	user_name = "example@mail.com"
 	user_psw  = "user_password"
-	DomainID  = "18899574"
+	domainID  = "domainID"
 	recordID  string
 )
 
 func TestCteateA(t *testing.T) {
-	dp := New(user_name, user_psw, DomainID)
+	dp := New(user_name, user_psw, domainID)
 	if id, err := dp.CreateA("yim.so", "1.1.1.1"); err != nil {
 		t.Error(err)
 	} else {
@@ -37,7 +37,7 @@ func TestCteateA(t *testing.T) {
 }
 
 func TestDelA(t *testing.T) {
-	dp := New(user_name, user_psw, DomainID)
+	dp := New(user_name, user_psw, domainID)
 	if err := dp.DelA(recordID); err != nil {
 		t.Error(err)
 	}
