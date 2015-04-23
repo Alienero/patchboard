@@ -70,7 +70,6 @@ func TestRoute(t *testing.T) {
 		t.Error(err)
 	}
 	defer resp.Body.Close()
-	println("1:RemoteAddr", r1.RemoteAddr)
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		t.Error(err)

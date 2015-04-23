@@ -19,31 +19,31 @@ import (
 )
 
 type Map struct {
-	m map[interface{}]interface{}
+	M map[interface{}]interface{}
 	sync.RWMutex
 }
 
 func NewMap() *Map {
 	return &Map{
-		m:       make(map[interface{}]interface{}),
+		M:       make(map[interface{}]interface{}),
 		RWMutex: sync.RWMutex{},
 	}
 }
 
 func (m *Map) Add(k, v interface{}) {
 	m.Lock()
-	m.m[k] = v
+	m.M[k] = v
 	m.Unlock()
 }
 
 func (m *Map) Del(k interface{}) {
 	m.Lock()
-	delete(m.m, k)
+	delete(m.M, k)
 	m.Unlock()
 }
 
 func (m *Map) Get(k interface{}) interface{} {
 	m.RLock()
 	defer m.RUnlock()
-	return m.m[k]
+	return m.M[k]
 }

@@ -74,11 +74,19 @@ func New(name, psw, domain_id string) *Dnspod {
 }
 
 func (d *Dnspod) CreateA(domain, ip string) (string, error) {
+	return d.createRecord(domain, ip, "A")
+}
+
+func (d *Dnspod) CreateC(domain, ip string) (string, error) {
+	return d.createRecord(domain, ip, "CNAME")
+}
+
+func (d *Dnspod) createRecord(domain, ip, typ string) (string, error) {
 	post_url := "https://dnsapi.cn/Record.Create"
 	v := d.vpool.Get().(url.Values)
 	defer d.vpool.Put(v)
 	v.Add("sub_domain", domain)
-	v.Add("record_type", "A")
+	v.Add("record_type", typ)
 	v.Add("record_line", "默认")
 	v.Add("value", ip)
 	resp, err := d.client.PostForm(post_url, v)
@@ -93,7 +101,7 @@ func (d *Dnspod) CreateA(domain, ip string) (string, error) {
 	}
 }
 
-func (d *Dnspod) DelA(id string) error {
+func (d *Dnspod) DelRecord(id string) error {
 	post_url := "https://dnsapi.cn/Record.Remove"
 	v := d.vpool.Get().(url.Values)
 	defer d.vpool.Put(v)

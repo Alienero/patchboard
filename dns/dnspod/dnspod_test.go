@@ -23,7 +23,8 @@ var (
 	user_name = "example@mail.com"
 	user_psw  = "user_password"
 	domainID  = "domainID"
-	recordID  string
+
+	recordID string
 )
 
 func TestCteateA(t *testing.T) {
@@ -38,7 +39,7 @@ func TestCteateA(t *testing.T) {
 
 func TestDelA(t *testing.T) {
 	dp := New(user_name, user_psw, domainID)
-	if err := dp.DelA(recordID); err != nil {
+	if err := dp.DelRecord(recordID); err != nil {
 		t.Error(err)
 	}
 }

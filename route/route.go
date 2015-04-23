@@ -15,43 +15,78 @@
 package route
 
 import (
+	"math/rand"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strings"
-	"sync"
+	"time"
 
 	"github.com/Alienero/patchboard/util"
 )
 
+func init() {
+	rand.Seed(time.Now().Unix())
+}
+
 type Route struct {
 	routes *util.Map
 	rp     *httputil.ReverseProxy
-	sync.RWMutex
 }
 
 func NewRoute() *Route {
 	r := &Route{
-		RWMutex: sync.RWMutex{},
-		routes:  util.NewMap(),
+		routes: util.NewMap(),
 	}
 	r.rp = &httputil.ReverseProxy{Director: r.director}
 	return r
 }
 
-func (r *Route) AddRoute(host string, ip string) {
-	r.routes.Add(host, ip)
+func (r *Route) AddRoute(host string, ips ...string) {
+	r.routes.Lock()
+	if v := r.routes.M[host]; v != nil {
+		if vs, ok := v.(*[]string); ok {
+			r.routes.M[host] = append(*vs, ips...)
+		} else {
+			r.routes.M[host] = &ips
+		}
+	} else {
+		r.routes.M[host] = &ips
+	}
+	r.routes.Unlock()
 }
 
 func (r *Route) DelRoute(host string) {
 	r.routes.Del(host)
 }
 
+func (r *Route) DelHost(host, ip string) {
+	r.routes.Lock()
+	temp := r.routes.M[host]
+	if v, ok := temp.(*[]string); ok {
+		ss := make([]string, len(*v)-1)
+		for i := 0; i < len(*v); {
+			if (*v)[i] != ip {
+				ss[i] = (*v)[i]
+			} else {
+				continue
+			}
+			i++
+		}
+		r.routes.M[host] = &ss
+	}
+	r.routes.Unlock()
+}
+
 func (r *Route) GetRoute(host string) string {
 	if v := r.routes.Get(host); v == nil {
 		return ""
-	} else if vt, ok := v.(string); ok {
-		return vt
+	} else if vt, ok := v.(*[]string); ok {
+		if len(*vt) == 1 {
+			return (*vt)[0]
+		} else {
+			return (*vt)[rand.Intn(len(*vt))]
+		}
 	} else {
 		return ""
 	}

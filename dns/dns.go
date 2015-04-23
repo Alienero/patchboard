@@ -16,5 +16,6 @@ package dns
 
 type Dns interface {
 	CreateA(domain, ip string) (string, error)
-	DelA(id string) error
+	DelRecord(id string) error
+	CreateC(domain, ip string) (string, error)
 }
