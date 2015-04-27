@@ -12,44 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package conf
+package controller
 
-type conf struct {
-	Admin string
-
-	// Default configs.
-	Mysql mysql
-	// etcd configs.
-	Etcd etcd
-	// Dns configs.
-	Dns dns
-	// Docker config.
-	Docker docker
-	// Controller config.
-	control Control
-}
-
-type mysql struct {
-	Space int
-}
-
-type etcd struct {
-	Addr string
-
-	// Etcd workspace.
-	Dir string
-
-	// Keys.
-	MySqlDir string
-	Route    string
-	Git      string
-}
-
-type dns struct {
-}
-
-type docker struct {
-}
-
-type control struct {
-}
+func Run() {}
